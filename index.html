@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHaven - Modern Online Bookstore</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Modern Animations */
+        .hover-up {
+            transition: transform 0.3s ease;
+        }
+        .hover-up:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Gradient Effects */
+        .gradient-text {
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+        
+        /* Card Hover Effects */
+        .book-card {
+            transition: all 0.3s ease;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 4px;
+        }
+        
+        /* Modern Button Hover Effect */
+        .btn-hover {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-hover:after {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 100%;
+            top: 0;
+            left: -40px;
+            transform: skewX(-45deg);
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.5s ease;
+        }
+        .btn-hover:hover:after {
+            width: 140%;
+        }
+
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #7c3aed;
+        }
+
+        .dark {
+            color-scheme: dark;
+        }
+
+        /* Dark mode specific styles */
+        .dark .dark:bg-gray-900 {
+            background-color: #111827;
+        }
+
+        .dark .dark:text-white {
+            color: #ffffff;
+        }
+
+        .dark .dark:bg-white {
+            background-color: #1f2937;
+        }
+
+        /* Theme Toggle Button Styles */
+        .theme-toggle {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            z-index: 50;
+        }
+
+        /* Add dark mode transition */
+        * {
+            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+        }
+
+        /* Dark mode gradient text */
+        .dark .gradient-text {
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+
+    <script>
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-3">
+                    <svg class="w-8 h-8 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <span class="text-2xl font-bold gradient-text">BookHaven</span>
+                </a>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-indigo-600 font-medium">Home</a>
+                    <a href="browse-books.html" class="text-gray-700 dark:text-gray-200 hover:text-indigo-600 font-medium transition-colors">Browse</a>
+                    <a href="new-releases.html" class="text-gray-700 dark:text-gray-200 hover:text-indigo-600 font-medium transition-colors">New Releases</a>
+                    <a href="about-us.html" class="text-gray-700 dark:text-gray-200 hover:text-indigo-600 font-medium transition-colors">About Us</a>
+                </div>
+
+                <!-- Search and Cart -->
+                <div class="flex items-center space-x-6">
+                    <div class="relative group">
+                        <input type="search" 
+                               placeholder="Search books..." 
+                               class="pl-10 pr-4 py-2 rounded-full border-2 border-gray-200 dark:border-gray-700 focus:outline-none focus:border-indigo-500 w-64 bg-gray-50 dark:bg-gray-800 dark:text-white transition-all"/>
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <button class="relative bg-indigo-600 text-white px-6 py-2.5 rounded-full hover:bg-indigo-700 transition-colors flex items-center space-x-2">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Cart</span>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <div class="hero-gradient pt-32 pb-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <h1 class="text-5xl font-bold mb-6 leading-tight">Your Gateway to Literary Excellence</h1>
+                    <p class="text-xl mb-8 text-indigo-100">Discover millions of eBooks, audiobooks, and more at your fingertips. Start your reading journey today.</p>
+                    <div class="flex space-x-4">
+                        <button class="btn-hover bg-white text-indigo-600 px-8 py-4 rounded-full font-semibold hover:bg-opacity-90 transition-colors shadow-lg flex items-center space-x-2">
+                            <span>Browse Books</span>
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                        <button class="btn-hover bg-indigo-700/50 text-white px-8 py-4 rounded-full font-semibold hover:bg-opacity-70 transition-colors shadow-lg flex items-center space-x-2">
+                            <i class="fas fa-play mr-2"></i>
+                            <span>How it Works</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Hero Image/Animation -->
+                <div class="hidden md:block relative">
+                    <!-- Your existing hero SVG/animation here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Books Section -->
+    <section class="py-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Featured Books</h2>
+                <p class="text-gray-600 dark:text-gray-400">Discover our handpicked selection of must-read books</p>
+            </div>
+
+            <!-- Books Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Book Card 1 -->
+                <div class="book-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f" 
+                             alt="Book Cover" 
+                             class="w-full h-64 object-cover transform hover:scale-105 transition-transform duration-300"/>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 cursor-pointer hover:bg-red-50 transition-colors">
+                            <i class="fas fa-heart text-red-500"></i>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm">
+                            Bestseller
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-indigo-600 cursor-pointer">The Art of Programming</h3>
+                                <p class="text-indigo-600 font-medium">John Smith</p>
+                            </div>
+                            <span class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full font-bold">$29.99</span>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">(4.5)</span>
+                            </div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">142 reviews</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Add to Cart</span>
+                            </button>
+                            <button class="p-3 border-2 border-indigo-600 text-indigo-600 rounded-xl hover:bg-indigo-50 transition-colors">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Book Card 2 -->
+                <div class="book-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e" 
+                             alt="Book Cover" 
+                             class="w-full h-64 object-cover transform hover:scale-105 transition-transform duration-300"/>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 cursor-pointer hover:bg-red-50 transition-colors">
+                            <i class="far fa-heart text-gray-400 hover:text-red-500"></i>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm">
+                            New Release
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-indigo-600 cursor-pointer">Digital Revolution</h3>
+                                <p class="text-indigo-600 font-medium">Sarah Johnson</p>
+                            </div>
+                            <span class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full font-bold">$24.99</span>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">(4.0)</span>
+                            </div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">89 reviews</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Add to Cart</span>
+                            </button>
+                            <button class="p-3 border-2 border-indigo-600 text-indigo-600 rounded-xl hover:bg-indigo-50 transition-colors">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Book Card 3 -->
+                <div class="book-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73" 
+                             alt="Book Cover" 
+                             class="w-full h-64 object-cover transform hover:scale-105 transition-transform duration-300"/>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 cursor-pointer hover:bg-red-50 transition-colors">
+                            <i class="far fa-heart text-gray-400 hover:text-red-500"></i>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm">
+                            20% Off
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-indigo-600 cursor-pointer">The Future of AI</h3>
+                                <p class="text-indigo-600 font-medium">Michael Brown</p>
+                            </div>
+                            <span class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full font-bold">$19.99</span>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">(5.0)</span>
+                            </div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">167 reviews</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Add to Cart</span>
+                            </button>
+                            <button class="p-3 border-2 border-indigo-600 text-indigo-600 rounded-xl hover:bg-indigo-50 transition-colors">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Book Card 4 -->
+                <div class="book-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c" 
+                             alt="Book Cover" 
+                             class="w-full h-64 object-cover transform hover:scale-105 transition-transform duration-300"/>
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 cursor-pointer hover:bg-red-50 transition-colors">
+                            <i class="far fa-heart text-gray-400 hover:text-red-500"></i>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">
+                            Featured
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-indigo-600 cursor-pointer">Creative Mind</h3>
+                                <p class="text-indigo-600 font-medium">Emily Davis</p>
+                            </div>
+                            <span class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-full font-bold">$34.99</span>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-1">
+                                <div class="flex text-yellow-400">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">(4.7)</span>
+                            </div>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">203 reviews</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Add to Cart</span>
+                            </button>
+                            <button class="p-3 border-2 border-indigo-600 text-indigo-600 rounded-xl hover:bg-indigo-50 transition-colors">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View More Button -->
+            <div class="text-center mt-12">
+                <a href="browse-books.html" 
+                   class="btn-hover bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-opacity inline-flex items-center space-x-2">
+                    <span>View More Books</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-white dark:bg-gray-800 mt-16">
+        <!-- Newsletter Section -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="text-center md:text-left">
+                        <h3 class="text-2xl font-bold mb-2">Join Our Newsletter</h3>
+                        <p class="text-indigo-100">Stay updated with our latest releases and special offers!</p>
+                    </div>
+                    <div class="w-full md:w-auto">
+                        <form class="flex flex-col sm:flex-row gap-4">
+                            <input type="email" 
+                                   placeholder="Enter your email" 
+                                   class="px-6 py-3 rounded-full bg-white/10 border border-white/20 focus:outline-none focus:border-white w-full md:w-80 text-white placeholder-indigo-200">
+                            <button class="px-8 py-3 bg-white text-indigo-600 rounded-full font-semibold hover:bg-opacity-90 transition-colors whitespace-nowrap">
+                                Subscribe Now
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Footer Content -->
+        <div class="max-w-7xl mx-auto px-4 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <svg class="w-8 h-8 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        <span class="text-2xl font-bold gradient-text">BookHaven</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 mb-6">Your ultimate destination for discovering new worlds through books. We bring the best literary works right to your doorstep.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors">
+                            <i class="fab fa-linkedin-in text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Quick Links</h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>About Us</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>Featured Books</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>New Releases</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>Contact Us</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Customer Service -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Customer Service</h4>
+                    <ul class="space-y-4">
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>Shipping Policy</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>Returns & Refunds</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>FAQ</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>Privacy Policy</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 transition-colors flex items-center space-x-2 group">
+                                <i class="fas fa-chevron-right text-sm group-hover:text-indigo-500"></i>
+                                <span>Terms of Service</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-6">Contact Us</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start space-x-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-map-marker-alt mt-1 text-indigo-500"></i>
+                            <span>123 Book Street, Reading City, RC 12345</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-phone text-indigo-500"></i>
+                            <span>+1 (234) 567-8900</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-envelope text-indigo-500"></i>
+                            <span>support@bookhaven.com</span>
+                        </li>
+                        <li class="flex items-center space-x-3 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-clock text-indigo-500"></i>
+                            <span>Mon - Fri: 9:00 AM - 6:00 PM</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="border-t border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 py-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-400 mb-4 md:mb-0">
+                        © 2024 BookHaven. All rights reserved.
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="h-8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" class="h-8">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="American Express" class="h-8">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition-colors hidden">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Back to Top Button functionality
+        const backToTopButton = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
