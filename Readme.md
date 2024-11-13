@@ -91,7 +91,7 @@ BookHaven is a modern, responsive online bookstore platform built with cutting-e
 
 ```bash
 # Clone repository
-git clone https://github.com/SrWitty/bookhaven.git
+git clone https://github.com/M7mdJs/bookhaven.git
 
 # Navigate to project
 cd bookhaven
@@ -138,4 +138,4 @@ bookhaven/
 
 ---
 ```plaintext
-Made with ❤️ by Sir_Witty
+Made with ❤️ by M7mdJs
